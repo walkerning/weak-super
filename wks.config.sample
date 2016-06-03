@@ -1,0 +1,20 @@
+[trainer]
+# Could be one of ["iterative"]
+type = "iterative"
+
+[dataset]
+# Could be one of ["voc"]
+type = "voc"
+path = "/dataset/VOC"
+
+[proposal]
+# Could be one of ["ss"]
+type = "ss"
+
+[feature]
+# Could be one of ["hog"]
+type = "hog"
+
+[detector]
+# Could be one of ["svm", "cnn"]
+type = "svm"
