@@ -5,7 +5,12 @@ type = "iterative"
 [dataset]
 # Could be one of ["voc"]
 type = "voc"
-path = "/dataset/VOC"
+
+## Available for Pacal VOC dataset: type "voc"
+# Pascal VOC devkit path
+path = "/dataset/VOC/VOC2007/VOCdevkit"
+# The year
+year = 2007
 
 [proposal]
 # Could be one of ["ss"]

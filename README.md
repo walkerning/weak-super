@@ -15,7 +15,7 @@ weak-supervision
 python setup.py develop --user
 ```
 
-然后可以运行(可能需要将`${HOME}/.local/bin`加入环境变量`${PATH}`:
+然后可以运行(可能需要将`${HOME}/.local/bin`加入环境变量`${PATH}`):
 
 ```bash
 wks-train <配置文件的路径>
