@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import cv2
 from . import Dataset
 
@@ -60,17 +61,18 @@ class VOCHandler(Dataset):
         image_set_file = os.path.join(self._data_path, "ImageSets", "Main",
                                       "{}_{}.txt".format(_cls, role))
         assert os.path.exists(image_set_file), \
-            u"图像索引文件不存在: {}".format(image_set_file)
-        return [self._cvt_record(_t) for _t in open(image_set_file).read().strip().split("\n")]
+            "path not exists: {}".format(image_set_file)
+        return [self._cvt_record(_r.strip()) for _r in open(image_set_file).read().strip().split("\n")]
 
-    def _cvt_record(self, _t):
+    def _cvt_record(self, rec):
+        _t = re.split("[ ]+", rec, 1)
         assert len(_t) == 2
         _t[1] = int(_t[1])
         return tuple(_t)
 
     def get_image_at_index(self, index):
         image_path = os.path.join(self._data_path, "JPEGImages",
-                                  "{}.JPEG".format(index))
+                                  "{}.jpg".format(index))
         assert os.path.exists(image_path), \
-            u"图像文件不存在: {}".format(image_path)
+            "path not exists: {}".format(image_path)
         return cv2.imread(image_path)

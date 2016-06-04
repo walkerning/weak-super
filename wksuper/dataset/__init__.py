@@ -98,4 +98,4 @@ class Dataset(object):
         raise NotImplementedError()
 
 # import and register all classes
-import .voc
+from . import voc

@@ -39,15 +39,18 @@ class IterativeTrainer(Trainer):
 
     def train(self):
         print "'{}' trainer start to train!".format(self.TYPE)
-        # handle dataset
-
-        # make proposals
         
-        # extract features
-
-        # initialization
-        
-        # alternative deciding latent labels and training detectors
+        # for cls_ind in range(self.data_handler.class_number):
+            # handle dataset
+            # print self.data_handler.class_names[cls_ind]
+            # print self.data_handler.positive_train_indexes(cls_ind)
+            # make proposals
+            
+            # extract features
+    
+            # initialization
+            
+            # alternative deciding latent labels and training detectors
 
 def main():
     parser = argparse.ArgumentParser()
