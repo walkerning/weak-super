@@ -32,24 +32,26 @@ class IterativeTrainer(Trainer):
 
     def __init__(self, cfg):
         self.cfg = cfg
-        self.data_handler = Dataset.get_registry(cfg["dataset"]["type"])(cfg)
+        self.dataset = Dataset.get_registry(cfg["dataset"]["type"])(cfg)
         self.proposaler = Proposaler.get_registry(cfg["proposal"]["type"])(cfg)
-        self.feat_extractor = _FE.get_registry(cfg["feature"]["type"])(cfg)
+        self.feat_ext = _FE.get_registry(cfg["feature"]["type"])(cfg)
         self.detector = Detector.get_registry(cfg["detector"]["type"])(cfg)
 
     def train(self):
         print "'{}' trainer start to train!".format(self.TYPE)
-        
-        # for cls_ind in range(self.data_handler.class_number):
+
+        for cls_ind in range(self.dataset.class_number):
             # handle dataset
-            # print self.data_handler.class_names[cls_ind]
-            # print self.data_handler.positive_train_indexes(cls_ind)
+            print "start to train class ", self.dataset.class_names[cls_ind]
+            pos_train_indexes = self.dataset.positive_train_indexes(cls_ind)
             # make proposals
-            
+            for im_ind in pos_train_indexes:
+                im = self.dataset.get_image_at_index(im_ind)
+                rois = self.proposaler.make_proposal(im)
             # extract features
-    
+
             # initialization
-            
+
             # alternative deciding latent labels and training detectors
 
 def main():

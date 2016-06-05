@@ -23,7 +23,7 @@ class FeatureExtractor(object):
         Parameters
         ------------
         im: 图片数据
-        rois: ROI列表
+        rois: Rx4, ROI列表
         """
         raise NotImplementedError()
 

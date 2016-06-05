@@ -28,7 +28,9 @@ class Proposaler(object):
         
         Returns
         ------------
-        rois: ROI列表
+        rois: numpy.array
+            Rx5矩阵: ROI列表 + confidence
+
         """
         raise NotImplementedError()
 
