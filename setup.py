@@ -13,10 +13,18 @@ MODULES = []
 PACKAGES = find_packages(exclude=["tests", "tests.*"])
 
 # dependencies
+# also need cv2 to work, sadly there is no such non-python dependency
+# managenet now...
 INSTALL_REQUIRES = [
-    "toml"
+    "toml==0.9.1",
+    "numpy==1.11.0",
+    "scipy==0.17.1",
+    "scikit-image==0.12.3",
+    "matplotlib==1.5.1" # poped by pip freeze
 ]
-TESTS_REQUIRE = []
+TESTS_REQUIRE = [
+    "pytest==2.9.2"
+]
 
 # entry points
 ENTRY_POINTS = """

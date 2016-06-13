@@ -20,6 +20,13 @@ type = "ss"
 # Could be one of ["hog"]
 type = "hog"
 
+# Avaiable for HOG feature: type "hog"
+# FYI: default feature dim is 15786
+win_size = 128
+orientations = 9 # default of skimage.feature.hog
+pixels_per_cell = 8 # default of skimage.feature.hog
+cells_per_block = 3 # default of skimage.feature.hog
+
 [detector]
 # Could be one of ["svm", "cnn"]
 type = "svm"
