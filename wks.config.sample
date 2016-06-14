@@ -11,6 +11,8 @@ type = "voc"
 path = "/dataset/VOC/VOC2007/VOCdevkit"
 # The year
 year = 2007
+# Use difficult annotations?
+use_diff = false
 
 [proposal]
 # Could be one of ["ss"]

@@ -20,3 +20,14 @@ python setup.py develop --user
 ```bash
 wks-train <配置文件的路径>
 ```
+
+单元测试
+------------
+```bash
+py.test
+```
+
+如果需要在程序正常工作的时候也想查看输出
+```
+py.test -s
+```

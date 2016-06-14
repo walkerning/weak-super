@@ -11,3 +11,9 @@ class SupervisedTrainer(Trainer):
     """
     TYPE = "supervised"
     
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self.dataset = Dataset.get_registry(cfg["dataset"]["type"])(cfg)
+        self.feat_ext = _FE.get_registry(cfg["feature"]["type"])(cfg)
+        self.detectors = []
+

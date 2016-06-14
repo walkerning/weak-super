@@ -86,6 +86,26 @@ class Dataset(object):
         """
         return [index for (index, l) in self.train_indexes(_cls) if l == 1]
 
+    def negative_train_indexes(self, _cls):
+        """
+        获得某种类型`_cls`的所有负例图像的索引列表
+
+        Parameters
+        ------------
+        _type: 类型编号
+
+        Returns
+        ------------
+        正例图像索引列表
+        """
+        return [index for (index, l) in self.train_indexes(_cls) if l == -1]
+
+    def positive_val_indexes(self, _cls):
+        return [index for (index, l) in self.val_indexes(_cls) if l == 1]
+
+    def positive_test_indexes(self, _cls):
+        return [index for (index, l) in self.test_indexes(_cls) if l == 1]
+
     def get_image_at_index(self, index):
         """
         获得某个索引对应的图像数据
