@@ -41,8 +41,13 @@ class HogFeatureExtractor(FeatureExtractor):
         """
         feature_dim = self._calculate_hog_dim()
         print "Hog feautre will be of dim {}".format(feature_dim)
-        fds = np.zeros((len(patches), feature_dim))
 
+        image_size = (self.cfg["win_size"], self.cfg["win_size"])
+        orientations = self.cfg["orientations"]
+        pixels_per_cell = (self.cfg["pixels_per_cell"], self.cfg["pixels_per_cell"])
+        cells_per_block = (self.cfg["cells_per_block"], self.cfg["cells_per_block"])
+
+        fds = np.zeros((len(patches), feature_dim))
         for i in range(len(patches)):
             # resize patch
             patch = patches[i]
@@ -58,6 +63,7 @@ class HogFeatureExtractor(FeatureExtractor):
         orientations = self.cfg["orientations"]
         pixels_per_cell = (self.cfg["pixels_per_cell"], self.cfg["pixels_per_cell"])
         cells_per_block = (self.cfg["cells_per_block"], self.cfg["cells_per_block"])
+
         return self.calculate_hog_dim(orientations,
                                       image_size,
                                       pixels_per_cell,
