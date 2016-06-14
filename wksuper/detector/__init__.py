@@ -6,6 +6,8 @@
 from ..exceptions import NotImplementedError
 from ..meta import meta
 
+from sklearn import svm
+
 class Detector(object):
     _ROLE = "detector"
     TYPE = None
@@ -50,10 +52,16 @@ class SVMDetector(Detector):
 
     def __init__(self, cfg, **kwargs):
         super(SVMDetector, self).__init__(cfg, **kwargs)
+        self.clf = []
 
+    def train(self, features, labels):
+        # features is a np.array
+        self.clf = svm.SVC(kernel='linear') # use linear-kernel
+        self.clf.fit(features, labels) # get the parameters
 
-    def train(self, feature, labels):
-        pass
+    def test(self, features):
+        # features is a np.array
+        return self.clf.predict(features) # return a np.array
 
     def save_param(self, file_name):
         pass
