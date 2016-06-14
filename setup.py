@@ -14,13 +14,14 @@ PACKAGES = find_packages(exclude=["tests", "tests.*"])
 
 # dependencies
 # also need cv2 to work, sadly there is no such non-python dependency
-# managenet now...
+# management now...
 INSTALL_REQUIRES = [
     "toml==0.9.1",
     "numpy==1.11.0",
     "scipy==0.17.1",
     "scikit-image==0.12.3",
-    "matplotlib==1.5.1" # poped by pip freeze
+    "matplotlib==1.5.1",
+    "sklearn",# poped by pip freeze
 ]
 TESTS_REQUIRE = [
     "pytest==2.9.2"
@@ -29,7 +30,7 @@ TESTS_REQUIRE = [
 # entry points
 ENTRY_POINTS = """
 [console_scripts]
-wks-train=wksuper.trainer:main
+wks-train=wksuper:main
 """
 
 setup(
