@@ -6,21 +6,25 @@ from .proposal import Proposaler
 from .feature import FeatureExtractor as _FE
 from .detector import Detector
 
+import random
+
 class IterativeTrainer(Trainer):
     """
     迭代训练器
     """
     TYPE = "iterative"
 
+    K = 10
+
     def __init__(self, cfg):
         self.cfg = cfg
         self.dataset = Dataset.get_registry(cfg["dataset"]["type"])(cfg)
         self.proposaler = Proposaler.get_registry(cfg["proposal"]["type"])(cfg)
         self.feat_ext = _FE.get_registry(cfg["feature"]["type"])(cfg)
-        self.detectors = []
 
-        self.feature_dict = {}
-        self.rois_dict = {}
+        self.pos_feature_dict = {} # key: im_ind
+        self.neg_feature_dict = {}
+        self.rois_dict = {} # key: im_ind (Maybe we don't need, if we need, we should divide this dict into two parts —— positive one and negetive one)
 
     def _proposal_and_features(self, im_ind):
         # handle dataset
@@ -34,34 +38,75 @@ class IterativeTrainer(Trainer):
 
         for cls_ind in range(self.dataset.class_number):
             detector = Detector.get_registry(self.cfg["detector"]["type"])(self.cfg)
-            self.detectors.append(detector)
-
+            
             print "start to train class ", self.dataset.class_names[cls_ind]
-            pos_train_indexes = self.dataset.positive_train_indexes(cls_ind)
+            pos_train_indexes = self.dataset.positive_train_indexes(cls_ind) # all positive image indexes in every class cls_ind
+            neg_train_indexes = self.dataset.negative_train_indexes(cls_ind) # all negative image indexes in every class cls_ind
 
-            # proposal and extract features
+            # get features of all rois of all positive images in every class 
             for im_ind in pos_train_indexes:
-                if im_ind not in self.feature_dict:
-                    self.rois_dict[im_ind], self.feature_dict[im_ind] = self._proposal_and_features(im_ind)
+                if im_ind not in self.pos_feature_dict:
+                    self.rois_dict[im_ind], self.pos_feature_dict[im_ind] = self._proposal_and_features(im_ind)
+            # get features of all rois of all negative images in every class 
+            for im_ind in neg_train_indexes:
+                if im_ind not in self.neg_feature_dict:
+                    self.rois_dict[im_ind], self.neg_feature_dict[im_ind] = self._proposal_and_features(im_ind)
 
             # initialization(choose one proposal from all proposals of every image)
-            feats, labels = self.my_init(self.feature_dict)
+            one_feat_dict = self.first_init(pos_train_indexes) # first initialization(use entire image up to a 4% border), one_feat_dict is a dict, key: im_ind
+            
 
             # alternative deciding latent labels and training detectors
             results = None # Detect score列表
             while results is None or not self.judge_converge(results): # FIXME: 传参数
                 # input: one proposal with feature every image
                 # output: a detector
+ 
+                # divide po-images into K folds
+                lens = len(pos_train_indexes)
+                fold = np.zeros((K, lens/K)) # every row contains lens/K po_im_indexes
+                random.shuffle(pos_train_indexes)
+                for i in range(K):
+                    fold[i, :] = pos_train_indexes[i:(i+1)*lens/K]
+                    
+                # For k = 1 to K
+                for i in range(K):
+                    # train using positive one_feature(one every image) in all folds but i
+                    # set lens-s positive features and 2 * lens-s negative ones to de_features(np.array)
+                    # first positive
+                    for j in range(K):
+                        if i != j:
+                            # put all windows(features) of this fold to de_features
+                            for ind in fold[j]:
+                                de_features = np.vstack(de_features, np.array(one_feat_dict[ind]) # add a row to this array
+
+                    # second negative (only select 2*lens negative ones randomly)
+                    for j in range(2 * lens):
+                        feat = random.sample(neg_feature_dict[random.sample(neg_feature_dict, 1)[0]])[0] # select a feature  
+                        de_features = np.vstack(de_features, np.array(feat))
+
+                    # set their labels (1: positive, 0: negative)
+                    de_labels = np.append(np.ones((1, lens)), np.zeros((1, 2 * lens)))
+                    clf = detector.train(de_features, de_labels) # get a detector
+                        
+                    # relocalize positive rois(one every image) in fold i using this detector(choose the roi of which the propobility is the highest)
+                    for im_ind in fold[i]:
+                        te_labels, te_distance = detector.test(pos_feature_dict[im_ind])
+                        index = np.where(min(te_distance[np.where(te_labels == 1)]) == te_distance)[0][0]                                
+                        one_feat_dict[im_ind] = pos_feature_dict[im_ind][index]# labels == 1 && distance is minimum
+
+                # train the final detector
                 detector.train(feats, labels) # 更新params
+
+                # perform hard-negative mining using this detector(get some negative proposals for next iteration)
                 results = detector.test(feats) # feats：dict所有的value(可能筛选负例)拼接起来的数组，更新results
-            detector.save_param()
+            detector.save_param() # save all parameters of SVM after iteration 
 
     def judge_converge(self):
         # 判断收敛条件是否达到, FIXME: 没有指定参数
         pass
 
-    def my_init(self, feature_dict):
-        # initalization, 返回
-        # feats: 是一个feature的array
-        # labels: 与feats一一对应的label标注: 1/-1
-        pass
+    def first_init(self, pos_train_indexes):
+        # get a proposal up to 4% border
+        return {im_ind:pos_feature_dict[im_ind][0] for im_ind in pos_train_indexes}
+

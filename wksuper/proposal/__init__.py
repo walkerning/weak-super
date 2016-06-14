@@ -45,5 +45,7 @@ class SSProposaler(Proposaler):
         TODO
         ------------
         @walkerning 实现之~
+        # output rois [[x0, y0, height0, width0],[x, y, height, width], ...]
+        # Attention! [x0, y0, height, width] is an image up to 4% border, must be putted in the first line
         """
         raise NotImplementedError()

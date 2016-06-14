@@ -77,10 +77,12 @@ class SVMDetector(Detector):
     def train(self, features, labels):
         # features is a np.array
         self.clf.fit(features, labels) # get the parameters
+        return self.clf
 
     def test(self, features):
         # features is a np.array
-        return self.clf.predict(features) # return a np.array
+        # output: an array of probabilities
+        return self.clf.predict(features), self.clf.decision_function(features) # return label, distance both np.array
 
     def save(self, file_name):
         with open(file_name, "w") as f:
