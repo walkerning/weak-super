@@ -48,22 +48,27 @@ class VOCHandler(Dataset):
         if isinstance(_cls, int):
             # 也接受整数下标作为类别, 返回字典序第_cls个类别对应的train indexes
             _cls = self._class_names[_cls]
-
-        return self._class_indexes_dict[_cls].setdefault("train", self._get_indexes(_cls, "train"))
+        if not "train" in self._class_indexes_dict[_cls]:
+            self._class_indexes_dict[_cls]["train"] = self._get_indexes(_cls, "train")
+        return self._class_indexes_dict[_cls]["train"]
 
     def val_indexes(self, _cls):
         if isinstance(_cls, int):
             # 也接受整数下标作为类别, 返回字典序第_cls个类别对应的train indexes
             _cls = self._class_names[_cls]
 
-        return self._class_indexes_dict[_cls].setdefault("val", self._get_indexes(_cls, "val"))
+        if not "val" in self._class_indexes_dict[_cls]:
+            self._class_indexes_dict[_cls]["val"] = self._get_indexes(_cls, "val")
+        return self._class_indexes_dict[_cls]["val"]
 
     def test_indexes(self, _cls):
         if isinstance(_cls, int):
             # 也接受整数下标作为类别, 返回字典序第_cls个类别对应的train indexes
             _cls = self._class_names[_cls]
 
-        return self._class_indexes_dict[_cls].setdefault("test", self._get_indexes(_cls, "test"))
+        if not "test" in self._class_indexes_dict[_cls]:
+            self._class_indexes_dict[_cls]["test"] = self._get_indexes(_cls, "test")
+        return self._class_indexes_dict[_cls]["test"]
 
     def _get_indexes(self, _cls, role):
         image_set_file = os.path.join(self._data_path, "ImageSets", "Main",
@@ -116,7 +121,10 @@ class VOCHandler(Dataset):
         if isinstance(_cls, int):
             # 也接受整数下标作为类别, 返回字典序第_cls个类别对应的train indexes
             _cls = self._class_names[_cls]
-        return self._class_boxes_dict.setdefault(_cls + "_" + role, self._load_annotations_for_cls(role, _cls))
+        key = _cls + "_" + role
+        if not key in self._class_boxes_dict:
+            self._class_boxes_dict[key] = self._load_annotations_for_cls(role, _cls)
+        return self._class_boxes_dict[key]
 
     @cache_pickler("voc_annotations_{role}_{_cls}")
     def _load_annotations_for_cls(self, role, _cls):
@@ -125,7 +133,7 @@ class VOCHandler(Dataset):
         QUESTION: 是不是只要在load_annotations包一层. 负例用什么这里是不是不要管
         NOTE: 为了缓存考虑, 这里的_cls为类型名, 不是index
         """
-        mapping = self.load_annotations(role)
+        mapping = dict(zip(self.all_indexes(role), self.load_annotations(role)))
        
         method = getattr(self, "positive_" + role + "_indexes")
         result_dict = {}
@@ -137,8 +145,9 @@ class VOCHandler(Dataset):
         return result_dict
 
     def load_annotations(self, role):
-        return self.ind_annotation_mapping.setdefault(role,
-                                                      self._load_annotations(role))
+        if not role in self.ind_annotation_mapping:
+            self.ind_annotation_mapping[role] = self._load_annotations(role)
+        return self.ind_annotation_mapping[role]
 
     @cache_pickler("all_voc_annotations_{role}")
     def _load_annotations(self, role):

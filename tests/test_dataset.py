@@ -44,3 +44,8 @@ class TestVOCHandler(object):
     def test_load_annotations_for_cls_test(self, cls):
         result = self.dataset.load_annotations_for_cls("test", cls)
         assert len(result) == len(self.dataset.positive_test_indexes(cls))
+
+    def test_boxes_num(self):
+        assert self.dataset.train_boxes_num == 6301
+        assert self.dataset.val_boxes_num == 6307
+        assert self.dataset.test_boxes_num == 12032
