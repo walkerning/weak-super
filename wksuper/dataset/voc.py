@@ -36,6 +36,9 @@ class VOCHandler(Dataset):
         # Dict: {role -> {image_ind -> annotations}}
         self.ind_annotation_mapping = {}
 
+    def name_to_ind(self, cls_name):
+        return self._class_to_num[cls_name]
+
     @property
     def class_number(self):
         return len(self._class_names)

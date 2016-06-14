@@ -5,7 +5,7 @@ detector_prefix = "det_"
 
 ## Available for Fully-Supervised trainer
 # #{negative boxes for train} / #{positive boxes for train}
-neg_pos_ratio = 1
+neg_pos_ratio = 2
 
 [dataset]
 # Could be one of ["voc"]

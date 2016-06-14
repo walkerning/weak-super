@@ -3,6 +3,8 @@
 二分类器
 """
 
+import cPickle
+
 from ..exceptions import NotImplementedError
 from ..meta import meta
 
@@ -40,6 +42,24 @@ class Detector(object):
         """
         raise NotImplementedError()
 
+    def save(self, file_name):
+        """
+        将detector参数存入文件
+        Parameters
+        ------------
+        file_name: 保存参数的文件名
+        """
+        raise NotImplementedError()
+
+    def load(self, file_name):
+        """
+        从文件加载detector参数
+        Parameters
+        ------------
+        file_name: 要加载参数的文件名
+        """
+        raise NotImplementedError()
+
 class SVMDetector(Detector):
     """
     SVM分类器 Kernel: linear
@@ -52,19 +72,20 @@ class SVMDetector(Detector):
 
     def __init__(self, cfg, **kwargs):
         super(SVMDetector, self).__init__(cfg, **kwargs)
-        self.clf = []
+        self.clf = svm.SVC(kernel='linear') # use linear-kernel
 
     def train(self, features, labels):
         # features is a np.array
-        self.clf = svm.SVC(kernel='linear') # use linear-kernel
         self.clf.fit(features, labels) # get the parameters
 
     def test(self, features):
         # features is a np.array
         return self.clf.predict(features) # return a np.array
 
-    def save_param(self, file_name):
-        pass
+    def save(self, file_name):
+        with open(file_name, "w") as f:
+            cPickle.dump(self.clf, f)
 
-    def load_param(self, file_name):
-        pass
+    def load(self, file_name):
+        with open(file_name, "r") as f:
+            self.clf = cPickle.load(f)

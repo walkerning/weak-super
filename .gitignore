@@ -123,3 +123,8 @@ ENV/
 
 # config files
 *.config
+
+# param dir
+!param/README.md
+wksuper/param/*
+

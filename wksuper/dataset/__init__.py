@@ -117,5 +117,11 @@ class Dataset(object):
         """
         raise NotImplementedError()
 
+    def name_to_ind(self, cls_name):
+        """
+        类型名 -> 类型下标(0-based)
+        """
+        raise NotImplementedError()
+
 # import and register all classes
 from . import voc
