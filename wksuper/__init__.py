@@ -5,6 +5,7 @@ import argparse
 def main():
     from .trainer import Trainer
     from . import iterative
+    from . import supervised
     from .config import cfg_from_file
     parser = argparse.ArgumentParser()
     parser.add_argument("cfg_file", help="The path of the config file")

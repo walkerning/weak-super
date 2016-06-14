@@ -120,3 +120,6 @@ ENV/
 
 # Data cache
 *.pkl
+
+# config files
+*.config

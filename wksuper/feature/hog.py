@@ -24,7 +24,9 @@ class HogFeatureExtractor(FeatureExtractor):
         im: np.array 图片数据
         rois: ROI列表, [(x1, y1, width, height)]
         """
-        return self.extract_from_patches([im[x1:x1+width, y1:y1+height] for (x1, y1, width, height) in rois])
+        return self.extract_from_patches([im[x1:x1+width, y1:y1+height] 
+                                          for (x1, y1, width, height) in rois 
+                                          if width > 0 and height > 0])
 
     def extract_from_patches(self, patches):
         """
@@ -39,8 +41,9 @@ class HogFeatureExtractor(FeatureExtractor):
         fds: np.array
             特征描述向量矩阵 RxD
         """
-        feature_dim = self._calculate_hog_dim()
-        print "Hog feautre will be of dim {}".format(feature_dim)
+        feature_dim = self.dim()
+        if self.cfg.get("debug", False):
+            print "Hog feautre will be of dim {}".format(feature_dim)
 
         image_size = (self.cfg["win_size"], self.cfg["win_size"])
         orientations = self.cfg["orientations"]
@@ -51,6 +54,8 @@ class HogFeatureExtractor(FeatureExtractor):
         for i in range(len(patches)):
             # resize patch
             patch = patches[i]
+            if not np.all(np.array(patch.shape, dtype=int) > 0):
+                continue
             resized_patch = color.rgb2gray(resize(patch, image_size))
             fd = hog(resized_patch, orientations=orientations,
                      pixels_per_cell=pixels_per_cell,

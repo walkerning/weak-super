@@ -31,6 +31,7 @@ class VOCHandler(Dataset):
                              "diningtable", "dog", "horse", "motorbike", "person",
                              "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
         self._class_indexes_dict = {_cls:{} for _cls in self._class_names}
+        self._class_boxes_dict = {}
         self._class_to_num = dict(zip(self._class_names, xrange(self.class_number)))
         # Dict: {role -> {image_ind -> annotations}}
         self.ind_annotation_mapping = {}
@@ -90,11 +91,32 @@ class VOCHandler(Dataset):
             "path not exists: {}".format(image_path)
         return cv2.imread(image_path)
 
+    @property
+    def train_boxes_num(self):
+        num = 0
+        for anno in self.load_annotations("train"):
+            num += len(anno["gt_classes"])
+        return num
+
+    @property
+    def val_boxes_num(self):
+        num = 0
+        for anno in self.load_annotations("val"):
+            num += len(anno["gt_classes"])
+        return num
+
+    @property
+    def test_boxes_num(self):
+        num = 0
+        for anno in self.load_annotations("test"):
+            num += len(anno["gt_classes"])
+        return num
+
     def load_annotations_for_cls(self, role, _cls):
         if isinstance(_cls, int):
             # 也接受整数下标作为类别, 返回字典序第_cls个类别对应的train indexes
             _cls = self._class_names[_cls]
-        return self._load_annotations_for_cls(role, _cls)
+        return self._class_boxes_dict.setdefault(_cls + "_" + role, self._load_annotations_for_cls(role, _cls))
 
     @cache_pickler("voc_annotations_{role}_{_cls}")
     def _load_annotations_for_cls(self, role, _cls):
@@ -103,9 +125,7 @@ class VOCHandler(Dataset):
         QUESTION: 是不是只要在load_annotations包一层. 负例用什么这里是不是不要管
         NOTE: 为了缓存考虑, 这里的_cls为类型名, 不是index
         """
-        mapping = self.ind_annotation_mapping.setdefault(role,
-                                                         dict(zip(self.all_indexes(role),
-                                                                  self.load_annotations(role))))
+        mapping = self.load_annotations(role)
        
         method = getattr(self, "positive_" + role + "_indexes")
         result_dict = {}
@@ -116,8 +136,12 @@ class VOCHandler(Dataset):
                 print "图片 {} 中有 {} 个类型为 {} 的框".format(ind, len(result_dict[ind]), _cls)
         return result_dict
 
-    @cache_pickler("all_voc_annotations_{role}")
     def load_annotations(self, role):
+        return self.ind_annotation_mapping.setdefault(role,
+                                                      self._load_annotations(role))
+
+    @cache_pickler("all_voc_annotations_{role}")
+    def _load_annotations(self, role):
         """
         加载所有标注
         role: str
@@ -125,7 +149,7 @@ class VOCHandler(Dataset):
         """
         return [self.load_annotation_at_index(image_ind)
                 for image_ind in self.all_indexes(role)]
-    
+
     # Ref: https://github.com/rbgirshick/py-faster-rcnn/blob/master/lib/datasets/pascal_voc.py
     def load_annotation_at_index(self, index):
         """
@@ -157,8 +181,8 @@ class VOCHandler(Dataset):
             # Make pixel indexes 0-based
             x1 = float(bbox.find('xmin').text) - 1
             y1 = float(bbox.find('ymin').text) - 1
-            x2 = float(bbox.find('xmax').text) - 1
-            y2 = float(bbox.find('ymax').text) - 1
+            x2 = float(bbox.find('xmax').text) - 1 - x1 # height
+            y2 = float(bbox.find('ymax').text) - 1 - y1 # width
             cls = self._class_to_num[obj.find('name').text.lower().strip()]
             boxes[ix, :] = [x1, y1, x2, y2]
             gt_classes[ix] = cls
