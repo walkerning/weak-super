@@ -53,7 +53,7 @@ class HogFeatureExtractor(FeatureExtractor):
             fds[i, :] = fd
         return fds
 
-    def _calculate_hog_dim(self):
+    def dim(self):
         image_size = (self.cfg["win_size"], self.cfg["win_size"])
         orientations = self.cfg["orientations"]
         pixels_per_cell = (self.cfg["pixels_per_cell"], self.cfg["pixels_per_cell"])

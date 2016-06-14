@@ -1,6 +1,7 @@
 [trainer]
 # Could be one of ["iterative"]
 type = "iterative"
+detector_prefix = "det_"
 
 [dataset]
 # Could be one of ["voc"]

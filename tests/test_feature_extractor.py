@@ -33,6 +33,6 @@ def hog_obj_and_results(request):
     return (FeatureExtractor.get_registry("hog")(cfg), request.param[1])
  
 class TestHogFeatureExtractor(object):
-    def test__calculate_hog_dim(self, hog_obj_and_results):
+    def test_dim(self, hog_obj_and_results):
         hog_extractor = hog_obj_and_results[0]
-        assert hog_extractor._calculate_hog_dim() == hog_obj_and_results[1]["dim"]
+        assert hog_extractor.dim() == hog_obj_and_results[1]["dim"]

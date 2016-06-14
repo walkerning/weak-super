@@ -35,4 +35,12 @@ class FeatureExtractor(object):
         """
         raise NotImplementedError()
 
+    def dim(self):
+        """
+        Returns
+        ------------
+        dim: int 返回的feature的长度
+        """
+        raise NotImplementedError()
+
 from . import hog

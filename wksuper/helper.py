@@ -9,7 +9,10 @@ import cPickle
 import glob
 from functools import wraps
 
-PICKLE_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
+here = os.path.dirname(os.path.abspath(__file__))
+
+PICKLE_CACHE_DIR = os.path.join(here, "cache")
+PARAM_DIR = os.path.join(here, "param")
 
 def cache_pickler(key):
     def wrapper(func):
@@ -42,3 +45,10 @@ def clean_cache(key_pattern):
 def clean_cache_main():
     assert len(sys.argv) == 2
     clean_cache(sys.argv[1])
+
+def get_param_dir(_type):
+    dir_path = os.path.join(PARAM_DIR, _type)
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path) # not handle error here!
+    return dir_path
+
