@@ -1,0 +1,3 @@
+[submodule "proposals/edge_box"]
+	path = proposals/edge_box
+	url = https://github.com/walkerning/edges

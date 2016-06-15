@@ -20,8 +20,15 @@ year = 2007
 use_diff = false
 
 [proposal]
-# Could be one of ["ss"]
-type = "ss"
+# Could be one of ["subprocess"]
+type = "subprocess"
+
+## Available for type "subprocess"
+# The command to run in subprocess,
+# this command should and should only print get proposal results
+# seperated by '\n' to standard output.
+# Use {input_image_fname} as the place holder for input image file name.
+command = ""
 
 [feature]
 # Could be one of ["hog"]
