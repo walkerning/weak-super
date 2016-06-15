@@ -51,7 +51,8 @@ class Detector(object):
         """
         raise NotImplementedError()
 
-    def load(self, file_name):
+    @classmethod
+    def load(self, cfg, file_name):
         """
         从文件加载detector参数
         Parameters
@@ -88,6 +89,9 @@ class SVMDetector(Detector):
         with open(file_name, "w") as f:
             cPickle.dump(self.clf, f)
 
-    def load(self, file_name):
+    @classmethod
+    def load(cls, cfg, file_name):
+        self = cls(cfg)
         with open(file_name, "r") as f:
             self.clf = cPickle.load(f)
+        return self

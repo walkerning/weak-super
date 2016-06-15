@@ -37,3 +37,20 @@ cells_per_block = 3 # default of skimage.feature.hog
 [detector]
 # Could be one of ["svm", "cnn"]
 type = "svm"
+
+[tester]
+# Could be one of ["regular"]
+type = "regular"
+debug = false
+
+# type of [trainer] section     
+trainer_type = "supervised"
+detector_prefix = "det_"
+# Threshold of proposal that will be handled
+proposal_threshold = 0.3
+max_proposal_per_im = 200
+
+# Threshold of detector score to send into nms
+pre_nms_threshold = 0.7
+# IoU threshold of NMS
+nms_iou_threshold = 0.3
