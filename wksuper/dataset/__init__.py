@@ -72,6 +72,16 @@ class Dataset(object):
         """
         raise NotImplementedError()
 
+    def all_indexes(self, role):
+        """
+        不分类别的列出训练/验证/测试集里的图片索引
+
+        Parameters
+        ------------
+        role: one of ["train", "val", "test]
+        """
+        raise NotImplementedError()
+
     def positive_train_indexes(self, _cls):
         """
         获得某种类型`_cls`的所有正例图像的索引列表

@@ -22,11 +22,11 @@ class HogFeatureExtractor(FeatureExtractor):
         Parameters
         ------------
         im: np.array 图片数据
-        rois: ROI列表, [(x1, y1, width, height)]
+        rois: ROI列表, [(x1, y1, x2, y2)]
         """
-        return self.extract_from_patches([im[x1:x1+width, y1:y1+height] 
-                                          for (x1, y1, width, height) in rois 
-                                          if width > 0 and height > 0])
+        return self.extract_from_patches([im[x1:x2, y1:y2] 
+                                          for (x1, y1, x2, y2) in rois])
+
 
     def extract_from_patches(self, patches):
         """

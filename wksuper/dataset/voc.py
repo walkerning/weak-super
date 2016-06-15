@@ -193,8 +193,8 @@ class VOCHandler(Dataset):
             # Make pixel indexes 0-based
             x1 = float(bbox.find('xmin').text) - 1
             y1 = float(bbox.find('ymin').text) - 1
-            x2 = float(bbox.find('xmax').text) - 1 - x1 # height
-            y2 = float(bbox.find('ymax').text) - 1 - y1 # width
+            x2 = float(bbox.find('xmax').text) - 1
+            y2 = float(bbox.find('ymax').text) - 1
             cls = self._class_to_num[obj.find('name').text.lower().strip()]
             boxes[ix, :] = [x1, y1, x2, y2]
             gt_classes[ix] = cls
