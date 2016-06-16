@@ -15,10 +15,24 @@ weak-supervision
 python setup.py develop --user
 ```
 
-然后可以运行(可能需要将`${HOME}/.local/bin`加入环境变量`${PATH}`):
-
 ```bash
-wks-train <配置文件的路径>
+cp wks.config.sample my_wks_config.config
+```
+然后可以运行`wks-train`和`wks-test`命令(可能需要将`${HOME}/.local/bin`加入环境变量`${PATH}`):
+
+训练: 
+```bash
+wks-train my_wks_config.config # <配置文件路径>
+```
+
+测试:
+```bash
+wks-test my_wks_config.config # <配置文件路径>
+```
+
+如果想查看测试的画框结果, 需要加入ShowImage钩子。加入钩子使用`wks-test`的`--hook`选项, 如下:
+```bash
+wks-test my_wks_config.config --hook ShowImage
 ```
 
 单元测试
