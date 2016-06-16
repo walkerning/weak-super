@@ -73,7 +73,7 @@ class SVMDetector(Detector):
 
     def __init__(self, cfg, **kwargs):
         super(SVMDetector, self).__init__(cfg, **kwargs)
-        self.clf = svm.SVC(kernel='linear') # use linear-kernel
+        self.clf = svm.SVC(kernel='linear', probability=True) # use linear-kernel
 
     def train(self, features, labels):
         # features is a np.array
@@ -82,8 +82,8 @@ class SVMDetector(Detector):
 
     def test(self, features):
         # features is a np.array
-        # output: an array of probabilities
-        return self.clf.predict(features), self.clf.decision_function(features) # return label, distance both np.array
+        # Attention: If dataset is very small, the results of predict and predict_proba have big differences. 
+        return self.clf.predict(features), np.amax(self.clf.predict_proba(features), axis = 1) # return label, probabilities both np.array
 
     def save(self, file_name):
         with open(file_name, "w") as f:
