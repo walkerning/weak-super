@@ -18,7 +18,7 @@ class ShowImageHook(Hook):
             self.visualize(im_ind, rois_score)
 
     def visualize(self, im_ind, rois_score):
-        im = self.tester.dataset.get_image_by_id(im_ind)
+        im = self.tester.dataset.get_image_at_index(im_ind)
         fig, ax = plt.subplots(figsize=(12, 12))
         # draw the original image
         im = im[:, :, (2, 1, 0)]

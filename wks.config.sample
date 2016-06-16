@@ -8,7 +8,7 @@ detector_prefix = "det_"
 neg_pos_ratio = 2
 
 [dataset]
-# Could be one of ["voc"]
+# Could be one of ["voc", "image"]
 type = "voc"
 
 ## Available for Pacal VOC dataset: type "voc"
@@ -18,6 +18,12 @@ path = "/dataset/VOC/VOC2007/VOCdevkit"
 year = 2007
 # Use difficult annotations?
 use_diff = false
+
+## Available for local-filesystem images: type "image"
+# Find image files under `path`
+image_path = "."
+# Legal extension of image files in lower case.
+legal_ext = ["jpg", "png"]
 
 [proposal]
 # Could be one of ["subprocess"]

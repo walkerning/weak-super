@@ -26,6 +26,7 @@ class RegularTester(Tester):
 
         self.feat_ext = _FE.get_registry(cfg["feature"]["type"])(cfg)
         self.detector_cls = Detector.get_registry(cfg["detector"]["type"])
+        self.pre_nms_threshold = self.cfg["tester"]["pre_nms_threshold"]
 
         # 加载detector
         detector_prefix = self.cfg["tester"].get("detector_prefix", "det_")
@@ -39,7 +40,7 @@ class RegularTester(Tester):
 
         self.debug = self.cfg.get("debug", False)
 
-    def test(self):
+    def _test(self, im_ind):
         # 获得图片
         im = self.dataset.get_image_at_index(im_ind)
 
@@ -48,8 +49,13 @@ class RegularTester(Tester):
         # 按照confidence从大到小排序, 取阈值
         index = np.argsort(rois[:, 4])[-1::-1]
         rois = rois[index, :]
-        # FIXME: 如果没有proposal的置信度超过threshold, np.where(.)[0][0]will raise
-        rois = rois[:min(np.where(rois[:, 4] < self.proposal_threshold)[0][0], 
+
+        _to_index = np.where(rois[:, 4] < self.proposal_threshold)[0]
+        if len(_to_index) == 0:
+            _to_index = rois.shape[0]
+        else:
+            _to_index = _to_index[0]
+        rois = rois[:min(_to_index,
                          self.max_proposal_per_im), :]
 
         # 提取特征
@@ -58,14 +64,14 @@ class RegularTester(Tester):
         # 开始检测
         rois_scores = {}
         for det_name, detector in self.detectors.iteritems():
-            scores = detector.test(features)
-            inds = np.where(scores > pre_nms_threshold)[0]
+            _, scores = detector.test(features)
+            inds = np.where(scores > self.pre_nms_threshold)[0]
             # 非最大值抑制
             pre_nms_rois = np.hstack((rois[inds, :4], scores[inds][:, np.newaxis]))
             keep = nms(pre_nms_rois, self.cfg["tester"]["nms_iou_threshold"])
-            post_nms_rois = nms_rois[keep, :]
+            post_nms_rois = pre_nms_rois[keep, :]
             for roi in post_nms_rois:
-                rois_scores.setdefault(roi[:4], []).append((det_name, roi[4]))
+                rois_scores.setdefault(tuple(roi[:4]), []).append((det_name, roi[4]))
 
         # 选取最可能的检测结果
         final_rois_score = {}

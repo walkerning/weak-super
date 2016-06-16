@@ -135,3 +135,4 @@ class Dataset(object):
 
 # import and register all classes
 from . import voc
+from . import image

@@ -14,7 +14,6 @@ class HogFeatureExtractor(FeatureExtractor):
     TYPE = "hog"
 
     def __init__(self, cfg, **kwargs):
-        print self
         super(HogFeatureExtractor, self).__init__(cfg, **kwargs)
 
     def extract_from_rois(self, im, rois):
@@ -25,7 +24,7 @@ class HogFeatureExtractor(FeatureExtractor):
         rois: ROI列表, [(x1, y1, x2, y2)]
         """
         return self.extract_from_patches([im[x1:x2, y1:y2] 
-                                          for (x1, y1, x2, y2) in rois])
+                                          for (x1, y1, x2, y2) in rois.astype(int)])
 
 
     def extract_from_patches(self, patches):

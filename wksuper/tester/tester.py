@@ -41,10 +41,10 @@ class Tester(object):
                 execute_num += 1
         print u"共执行 {} 个 {} Hook".format(execute_num, hk_point)
         
-    def test_all(self):
-        for im_ind in self.dataset.all_indexes("test"):
-            test_ans = self.test(im_ind)
-            hook("post_test", im_ind, test_ans)
-
     def test(self):
+        for im_ind in self.dataset.all_indexes("test"):
+            test_ans = self._test(im_ind)
+            self.hook("post_test", im_ind, test_ans)
+
+    def _test(self, im_ind):
         raise NotImplementedError()
