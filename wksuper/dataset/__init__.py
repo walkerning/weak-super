@@ -113,6 +113,9 @@ class Dataset(object):
     def positive_val_indexes(self, _cls):
         return [index for (index, l) in self.val_indexes(_cls) if l == 1]
 
+    def positive_trainval_indexes(self, _cls):
+        return [index for (index, l) in self.trainval_indexes(_cls) if l == 1]
+
     def positive_test_indexes(self, _cls):
         return [index for (index, l) in self.test_indexes(_cls) if l == 1]
 

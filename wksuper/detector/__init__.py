@@ -81,8 +81,8 @@ class SVMDetector(Detector):
         # features is a np.array
         # Attention: If dataset is very small, the results of predict and predict_proba have big differences. 
         labels = self.clf.predict(features)
-        return labels, self.clf.predict_proba(features)[np.hstack(((1-labels)[:, np.newaxis],
-                                                                   labels[:, np.newaxis])).astype(bool)] # return label, probabilities both np.array
+        return labels, self.clf.predict_proba(features)[np.hstack((((1-labels)/2)[:, np.newaxis],
+                                                                   ((labels+1)/2)[:, np.newaxis])).astype(bool)] # return label, probabilities both np.array
 
     def save(self, file_name):
         with open(file_name, "w") as f:

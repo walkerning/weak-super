@@ -47,6 +47,14 @@ class VOCHandler(Dataset):
     def class_names(self):
         return self._class_names
 
+    def trainval_indexes(self, _cls):
+        if isinstance(_cls, int):
+            # 也接受整数下标作为类别, 返回字典序第_cls个类别对应的train indexes
+            _cls = self._class_names[_cls]
+        if not "trainval" in self._class_indexes_dict[_cls]:
+            self._class_indexes_dict[_cls]["trainval"] = self._get_indexes(_cls, "trainval")
+        return self._class_indexes_dict[_cls]["trainval"]
+
     def train_indexes(self, _cls):
         if isinstance(_cls, int):
             # 也接受整数下标作为类别, 返回字典序第_cls个类别对应的train indexes
@@ -98,6 +106,10 @@ class VOCHandler(Dataset):
         assert os.path.exists(image_path), \
             "path not exists: {}".format(image_path)
         return cv2.imread(image_path)
+
+    @property
+    def trainval_boxes_num(self):
+        return self.train_boxes_num + self.val_boxes_num
 
     @property
     def train_boxes_num(self):

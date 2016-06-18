@@ -91,7 +91,7 @@ class IterativeTrainer(Trainer):
                         de_features = np.vstack((de_features, np.array(feat)))
 
                     # set their labels (1: positive, 0: negative)
-                    de_labels = np.append(np.ones((1, s_lens)), np.zeros((1, 2 * s_lens)))
+                    de_labels = np.append(np.ones((1, s_lens)), -np.ones((1, 2 * s_lens)))
                     detector.train(de_features, de_labels) # get a detector
                         
                     # relocalize positive rois(one every image) in fold i using this detector(choose the roi of which the propobility is the highest)
@@ -117,7 +117,7 @@ class IterativeTrainer(Trainer):
                         neg_feats = np.vstack((neg_feats, np.array(feat)))
                     
                 # set labels
-                labels = np.append(np.ones((1, lens)), np.zeros((1, 2 * lens)))
+                labels = np.append(np.ones((1, lens)), -np.ones((1, 2 * lens)))
                 feats = np.vstack((pos_feats, neg_feats))
                 detector.train(feats, labels) # renew params
 
