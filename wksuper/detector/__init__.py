@@ -65,10 +65,6 @@ class Detector(object):
 class SVMDetector(Detector):
     """
     SVM分类器 Kernel: linear
-
-    TODO
-    ------------
-    @criminalking 实现之~
     """
     TYPE = "svm"
 
@@ -84,7 +80,9 @@ class SVMDetector(Detector):
     def test(self, features):
         # features is a np.array
         # Attention: If dataset is very small, the results of predict and predict_proba have big differences. 
-        return self.clf.predict(features), np.amax(self.clf.predict_proba(features), axis = 1) # return label, probabilities both np.array
+        labels = self.clf.predict(features)
+        return labels, self.clf.predict_proba(features)[np.hstack(((1-labels)[:, np.newaxis],
+                                                                   labels[:, np.newaxis])).astype(bool)] # return label, probabilities both np.array
 
     def save(self, file_name):
         with open(file_name, "w") as f:
