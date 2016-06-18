@@ -1,4 +1,4 @@
-q# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from .trainer import Trainer
 from .dataset import Dataset
@@ -12,7 +12,7 @@ import numpy as np
 
 class IterativeTrainer(Trainer):
     """
-    迭代训练器
+    iterative trainer
     """
     TYPE = "iterative"
 
@@ -92,7 +92,7 @@ class IterativeTrainer(Trainer):
 
                     # set their labels (1: positive, 0: negative)
                     de_labels = np.append(np.ones((1, s_lens)), np.zeros((1, 2 * s_lens)))
-                    clf = detector.train(de_features, de_labels) # get a detector
+                    detector.train(de_features, de_labels) # get a detector
                         
                     # relocalize positive rois(one every image) in fold i using this detector(choose the roi of which the propobility is the highest)
                     for im_ind in fold[i]:
@@ -119,10 +119,10 @@ class IterativeTrainer(Trainer):
                 # set labels
                 labels = np.append(np.ones((1, lens)), np.zeros((1, 2 * lens)))
                 feats = np.vstack((pos_feats, neg_feats))
-                detector.train(feats, labels) # 更新params
+                detector.train(feats, labels) # renew params
 
                 # perform hard-negative mining using this detector(get some negative proposals for next iteration)
-                new_results = detector.test(pos_feats) # 检测正例
+                new_results = detector.test(pos_feats) # test positive examples
                 neg_results, proba = detector.test(neg_feats) # get hard-negative features
                 hard_neg_feature = neg_feats[np.where((neg_results == 1))] 
                 flag = self.judge_converge(results, new_results)
@@ -132,7 +132,7 @@ class IterativeTrainer(Trainer):
 
     def judge_converge(self, results, new_results):
         # input are two OrderedDict
-        if np.count_nonzero(np.array(results.values()) - np.array(new_results.values()))) < vari_number:
+        if np.count_nonzero(np.array(results.values()) - np.array(new_results.values())) < vari_number:
             return True
         else:
             return False

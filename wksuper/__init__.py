@@ -12,6 +12,7 @@ def main():
     args = parser.parse_args()
     cfg = cfg_from_file(args.cfg_file)
     trainer = Trainer.get_registry(cfg["trainer"]["type"])(cfg)
+    print "MAIN: begin train!"
     trainer.train()
 
 def test_main():

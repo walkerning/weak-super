@@ -9,6 +9,7 @@ from ..exceptions import NotImplementedError
 from ..meta import meta
 
 from sklearn import svm
+import numpy as np
 
 class Detector(object):
     _ROLE = "detector"
