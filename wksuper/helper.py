@@ -8,6 +8,7 @@ import sys
 import cPickle
 import glob
 from functools import wraps
+import matplotlib.pyplot as plt
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -52,3 +53,28 @@ def get_param_dir(_type):
         os.mkdir(dir_path) # not handle error here!
     return dir_path
 
+def visualize(im, rois_score, im_ind=""):
+    fig, ax = plt.subplots(figsize=(12, 12))
+    # draw the original image
+    im = im[:, :, (2, 1, 0)]
+    ax.imshow(im, aspect="equal")
+
+    for bbox, (det_name, det_score) in rois_score.iteritems():
+        ax.add_patch(
+            plt.Rectangle((bbox[0], bbox[1]),
+                          bbox[2] - bbox[0],
+                          bbox[3] - bbox[1], fill=False,
+                          edgecolor='red', linewidth=3.5)
+        )
+        ax.text(bbox[0], bbox[1] - 2,
+                '{} {}'.format(det_name, det_score),
+                bbox=dict(facecolor='blue', alpha=0.5),
+                fontsize=14, color='white')
+
+    ax.set_title(('{} detections'.format(im_ind)),
+                 fontsize=14)
+    print "image %s handled, %d boxes ploted" % (im_ind, len(rois_score))
+    plt.axis("off")
+    plt.tight_layout()
+    plt.draw()
+    plt.show() # will block by default

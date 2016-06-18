@@ -32,7 +32,7 @@ class IterativeTrainer(Trainer):
         im = self.dataset.get_image_at_index(im_ind) # get a image
         rois = self.proposaler.make_proposal(im) # get many proposals of one image
         # extract features
-        return self.feat_ext.extract_from_rois(im, rois) # every proposal has a feature
+        return self.feat_ext.extract_from_rois(im, rois[:, :4]) # every proposal has a feature
 
     def train(self):
         print "'{}' trainer start to train!".format(self.TYPE)
