@@ -14,3 +14,6 @@ class Hook(object):
 
     def post_test_all(self, *args):
         pass
+
+from . import show_im
+from . import record_result
