@@ -78,3 +78,6 @@ def visualize(im, rois_score, im_ind=""):
     plt.tight_layout()
     plt.draw()
     plt.show() # will block by default
+
+def plot_rois_with_score(im, rois, labels, scores):
+    visualize(im, {tuple(roi[:4].astype(int)):('', roi[4]) for roi in np.hstack((rois[np.where(labels==1)[0], :4], scores[np.where(labels==1)[0]][:, np.newaxis]))})

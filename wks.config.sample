@@ -40,15 +40,29 @@ type = "subprocess"
 command = ""
 
 [feature]
-# Could be one of ["hog"]
+# Could be one of ["hog", "cnn"]
 type = "hog"
 
-# Avaiable for HOG feature: type "hog"
+## Available for HOG feature: type "hog"
 # FYI: default feature dim is 15786
 win_size = 128
 orientations = 9 # default of skimage.feature.hog
 pixels_per_cell = 8 # default of skimage.feature.hog
 cells_per_block = 3 # default of skimage.feature.hog
+
+## Available for CNN feature: type "cnn"
+# FYI: If the bvlc_caffenet pretrained model on imagenet is used, 
+#      the default dim is 9216
+proto = "./cnn/extract_feature.pt"
+caffemodel = "./cnn/extract_feature.caffemodel"
+dedup_boxes = 0.0625
+# GPU
+gpu_mode = true
+gpu_id = 0
+# Optional, defaults will be <PROJECT_ROOT>/cnn/py-faster-rcnn/lib 
+# and <PROJECT_ROOT>/cnn/py-faster-rcnn/caffe-fast-rcnn/python
+# faster_rcnn_path = ""
+# pycaffe_path = ""
 
 [detector]
 # Could be one of ["svm", "cnn"]

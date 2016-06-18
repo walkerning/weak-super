@@ -44,3 +44,4 @@ class FeatureExtractor(object):
         raise NotImplementedError()
 
 from . import hog
+from . import cnn

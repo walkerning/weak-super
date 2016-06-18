@@ -1,3 +1,6 @@
 [submodule "proposals/edge_box"]
 	path = proposals/edge_box
 	url = https://github.com/walkerning/edges
+[submodule "cnn/py-faster-rcnn"]
+	path = cnn/py-faster-rcnn
+	url = https://github.com/walkerning/py-faster-rcnn-1
