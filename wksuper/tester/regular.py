@@ -64,8 +64,9 @@ class RegularTester(Tester):
         # 开始检测
         rois_scores = {}
         for det_name, detector in self.detectors.iteritems():
-            _, scores = detector.test(features)
-            inds = np.where(scores > self.pre_nms_threshold)[0]
+            labels, scores = detector.test(features)
+            inds = np.where(np.logical_and(labels == 1, 
+                                           scores > self.pre_nms_threshold))[0]
             # 非最大值抑制
             pre_nms_rois = np.hstack((rois[inds, :4], scores[inds][:, np.newaxis]))
             keep = nms(pre_nms_rois, self.cfg["tester"]["nms_iou_threshold"])
