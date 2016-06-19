@@ -38,6 +38,18 @@ class SupervisedTrainer(Trainer):
                 positive_features = np.vstack((positive_features, 
                                                self.feat_ext.extract_from_rois(im, 
                                                                                bbox)))
+                if self.cfg["trainer"].get("flipped", False):
+                    # flipped
+                    width = im.shape[0]
+                    im = im[:, ::-1, :] # flipped image
+                    flipped_bbox = bbox.copy()
+                    oldx1 = flipped_bbox[:, 0].copy()
+                    oldx2 = flipped_bbox[:, 2].copy()
+                    flipped_bbox[:, 0] = width - oldx2 - 1
+                    flipped_bbox[:, 2] = width - oldx1 - 1
+                    positive_features = np.vstack((positive_features, 
+                                                   self.feat_ext.extract_from_rois(im, 
+                                                                                   flipped_bbox)))
             print u"提取postive框feature结束"
 
             negative_features = np.zeros((0, self.feat_ext.dim()))
@@ -54,7 +66,7 @@ class SupervisedTrainer(Trainer):
                            np.hstack((np.ones(positive_features.shape[0]),
                                       -np.ones(negative_features.shape[0]))))
             print "End train detector {}".format(self.cfg["detector"]["type"])
-            detector.save(os.path.join(get_param_dir(self.TYPE), self.detector_prefix + str(cls_ind)))
+            detector.save(os.path.join(get_param_dir(self.TYPE), self.detector_prefix + str(cls_name)))
 
     @cache_pickler("negative_indexes_bbox_mapping_{cls_name}_{neg_pos_ratio}")
     def _sample_negative_bboxes(self, cls_name, neg_pos_ratio):

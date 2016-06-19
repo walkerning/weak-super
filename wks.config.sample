@@ -6,6 +6,8 @@ detector_prefix = "det_"
 ## Available for Fully-Supervised trainer
 # #{negative boxes for train} / #{positive boxes for train}
 neg_pos_ratio = 2
+# Use flipped postive bboxes for training too
+flipped = true
 
 ## Available for Iterative trainer
 fold = 10
