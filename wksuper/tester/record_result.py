@@ -27,9 +27,9 @@ class RecordResultHook(Hook):
     def record(self, im_ind, rois_score):
         for bbox, (det_name, det_score) in rois_score.iteritems():
             self.record_file.write(("{im_ind} {det_name} {det_score}" +
-                                    "{bbox[0]} {bbox[1]} {bbox[2]} {bbox[3]}").format(im_ind=im_ind,
-                                                                                      det_name=det_name,
-                                                                                      det_score=det_score,
-                                                                                      bbox=bbox))
+                                    "{bbox[0]} {bbox[1]} {bbox[2]} {bbox[3]}\n").format(im_ind=im_ind,
+                                                                                        det_name=det_name,
+                                                                                        det_score=det_score,
+                                                                                        bbox=bbox))
             self.record_file.flush()
         print "写入 {}: 图片 {}".format(self.record_file_name, im_ind)
