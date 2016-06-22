@@ -60,7 +60,7 @@ class CNNFeatureExtractor(FeatureExtractor):
             _, index, inv_index = np.unique(hashes, return_index=True,
                                             return_inverse=True)
             blobs['rois'] = blobs['rois'][index, :]
-            rois = rois[index, :] # ? 这里还有什么用...用于debug?
+            #rois = rois[index, :] # ? 这里还有什么用...用于debug?
     
         # reshape network inputs
         self.net.blobs['data'].reshape(*(blobs['data'].shape))

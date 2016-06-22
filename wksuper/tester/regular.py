@@ -30,11 +30,14 @@ class RegularTester(Tester):
 
         # 加载detector
         detector_prefix = self.cfg["tester"].get("detector_prefix", "det_")
-        detector_path = self.get_param_dir_by_name(self.cfg["tester"]["param_dir"])
+        detector_path = get_param_dir_by_name(self.cfg["tester"]["param_dir"])
+        print "Use detector path: {}".format(detector_path)
+
         dets = glob.glob(os.path.join(detector_path, "{}*".format(detector_prefix)))
         det_names = []
         for det_path in dets:
             det_names.append(os.path.basename(det_path)[len(detector_prefix):])
+        print "All detectors: {}".format(", ".join(det_names))
         self.detectors = {det_name:self.detector_cls.load(cfg, det_path) 
                           for det_name, det_path in zip(det_names, dets)}
 
