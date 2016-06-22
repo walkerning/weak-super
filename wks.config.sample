@@ -76,7 +76,7 @@ type = "regular"
 debug = false
 
 # type of [trainer] section     
-trainer_type = "supervised"
+param_dir = "supervised"
 detector_prefix = "det_"
 # Threshold of proposal that will be handled
 proposal_threshold = 0.3

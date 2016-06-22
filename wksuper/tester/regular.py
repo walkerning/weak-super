@@ -9,7 +9,7 @@ from wksuper.dataset import Dataset
 from wksuper.proposal import Proposaler
 from wksuper.feature import FeatureExtractor as _FE
 from wksuper.detector import Detector
-from wksuper.helper import get_param_dir
+from wksuper.helper import get_param_dir_by_name
 from wksuper.nms import nms
 
 class RegularTester(Tester):
@@ -30,7 +30,7 @@ class RegularTester(Tester):
 
         # 加载detector
         detector_prefix = self.cfg["tester"].get("detector_prefix", "det_")
-        detector_path = get_param_dir(self.cfg["tester"]["trainer_type"])
+        detector_path = self.get_param_dir_by_name(self.cfg["tester"]["param_dir"])
         dets = glob.glob(os.path.join(detector_path, "{}*".format(detector_prefix)))
         det_names = []
         for det_path in dets:

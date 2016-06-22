@@ -54,6 +54,12 @@ def get_param_dir(_type):
         os.mkdir(dir_path) # not handle error here!
     return dir_path
 
+def get_param_dir_by_name(dir_name):
+    dir_path = os.path.join(PARAM_DIR, dir_name)
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path) # not handle error here!
+    return dir_path
+
 def visualize(im, rois_score, im_ind=""):
     fig, ax = plt.subplots(figsize=(12, 12))
     # draw the original image

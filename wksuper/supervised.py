@@ -22,6 +22,7 @@ class SupervisedTrainer(Trainer):
         self.detector_prefix = self.cfg["trainer"].get("detector_prefix", "det_")
         self.neg_pos_ratio = self.cfg["trainer"]["neg_pos_ratio"]
         self.debug = self.cfg["trainer"].get("debug", False)
+        self.param_dir = get_param_dir(self.TYPE)
 
     def train(self):
         for cls_ind in range(self.dataset.class_number):
@@ -66,7 +67,7 @@ class SupervisedTrainer(Trainer):
                            np.hstack((np.ones(positive_features.shape[0]),
                                       -np.ones(negative_features.shape[0]))))
             print "End train detector {}".format(self.cfg["detector"]["type"])
-            detector.save(os.path.join(get_param_dir(self.TYPE), self.detector_prefix + str(cls_name)))
+            detector.save(os.path.join(self.param_dir, self.detector_prefix + str(cls_name)))
 
     @cache_pickler("negative_indexes_bbox_mapping_{cls_name}_{neg_pos_ratio}")
     def _sample_negative_bboxes(self, cls_name, neg_pos_ratio):
