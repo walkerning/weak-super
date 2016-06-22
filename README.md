@@ -12,6 +12,7 @@ weak-supervision
 先需要安装:
 
 ```bash
+git clone --recursive https://github.com/criminalking/weak-supervision
 python setup.py develop --user
 ```
 

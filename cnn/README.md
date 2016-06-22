@@ -1,7 +1,9 @@
 CNN
 ------------
 
+
 ```bash
+# git submodule update --init --recursive # recursive init submodule. 如果已经用git clone --recursive 克隆整个weak-supervision工程就不需要
 cd py-faster-rcnn/caffe-fast-rcnn
 cp Makefile.config.example Makefile.config # 并修改: BLAS=mkl, WITH_PYTHON_LAYER=1
 make -j 20 && make pycaffe
