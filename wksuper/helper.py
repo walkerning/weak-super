@@ -7,6 +7,7 @@ import os
 import sys
 import cPickle
 import glob
+import time
 from functools import wraps
 import matplotlib.pyplot as plt
 
@@ -48,7 +49,7 @@ def clean_cache_main():
     clean_cache(sys.argv[1])
 
 def get_param_dir(_type):
-    dir_path = os.path.join(PARAM_DIR, _type)
+    dir_path = os.path.join(PARAM_DIR, _type + "-" + time.strftime("%F-%H-%M-%s"))
     if not os.path.exists(dir_path):
         os.mkdir(dir_path) # not handle error here!
     return dir_path
