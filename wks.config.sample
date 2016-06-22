@@ -1,5 +1,5 @@
 [trainer]
-# Could be one of ["iterative", "supervised"]
+# Could be one of ["iterative", "supervised", "miltrainer"]
 type = "iterative"
 detector_prefix = "det_"
 
@@ -11,6 +11,7 @@ flipped = true
 
 ## Available for Iterative trainer
 fold = 10
+converge_vari_number = 20
 
 [dataset]
 # Could be one of ["voc", "image"]
@@ -71,7 +72,7 @@ gpu_id = 0
 type = "svm"
 
 [tester]
-# Could be one of ["regular"]
+# Could be one of ["regular", "bag"]
 type = "regular"
 debug = false
 

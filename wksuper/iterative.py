@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict
+import random
+import numpy as np
+
 from .trainer import Trainer
 from .dataset import Dataset
 from .proposal import Proposaler
 from .feature import FeatureExtractor as _FE
 from .detector import Detector
-
-from collections import OrderedDict
-import random
-import numpy as np
+from .helper import get_param_dir
 
 class IterativeTrainer(Trainer):
     """
@@ -27,6 +28,9 @@ class IterativeTrainer(Trainer):
         self.pos_feature_dict = OrderedDict() # key: im_ind
         self.neg_feature_dict = OrderedDict()
 
+        self.detector_prefix = self.cfg["trainer"].get("detector_prefix", "det_")
+        self.param_dir = get_param_dir(self.TYPE)
+
     def _proposal_and_features(self, im_ind):
         # handle dataset
         im = self.dataset.get_image_at_index(im_ind) # get a image
@@ -38,9 +42,10 @@ class IterativeTrainer(Trainer):
         print "'{}' trainer start to train!".format(self.TYPE)
 
         for cls_ind in range(self.dataset.class_number):
+            cls_name = self.dataset.class_names[cls_ind]
             detector = Detector.get_registry(self.cfg["detector"]["type"])(self.cfg)
             
-            print "start to train class ", self.dataset.class_names[cls_ind]
+            print "start to train class ", cls_name
             pos_train_indexes = self.dataset.positive_train_indexes(cls_ind) # all positive image indexes in every class cls_ind
             neg_train_indexes = self.dataset.negative_train_indexes(cls_ind) # all negative image indexes in every class cls_ind
             hard_neg_feature = None 
@@ -128,7 +133,8 @@ class IterativeTrainer(Trainer):
                 flag = self.judge_converge(results, new_results)
                 results = new_results
 
-            detector.save_param() # save all parameters of SVM after iteration 
+            # save all parameters of SVM after iteration 
+            detector.save(os.path.join(self.param_dir, self.detector_prefix + str(cls_name)))
 
     def judge_converge(self, results, new_results):
         # input are two OrderedDict
