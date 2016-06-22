@@ -11,6 +11,7 @@ import tempfile
 import shlex
 import numpy as np
 import cv2
+import psutil
 
 from wksuper.proposal.proposaler import Proposaler
 
@@ -29,6 +30,7 @@ class SubprocessProposaler(Proposaler):
             self.command += " \{{}\}".format(IMAGE_FNAME_PLACEHOLDER)
         print "Subprocess proposaler: using command: ", self.command
         self.tmp_file_suffix = "wksuper_proposal.{}".format(self.TMP_EXT)
+        self.proc = psutil.Process()
 
     def parse_output(self, output):
         output = output.strip().split("\n")
@@ -44,5 +46,11 @@ class SubprocessProposaler(Proposaler):
     def make_proposal(self, im):
         _, fname = tempfile.mkstemp(suffix=self.tmp_file_suffix)
         cv2.imwrite(fname, im)
+
+        # close temporary files to avoid opening too much files, cv2.imwrite do not close file by default
+        for f in self.proc.open_files():
+            if f.path == fname:
+                os.fdopen(f.fd).close()
+
         output = subprocess.check_output(shlex.split(self.command.format(**{IMAGE_FNAME_PLACEHOLDER:fname})))
         return self.parse_output(output)
