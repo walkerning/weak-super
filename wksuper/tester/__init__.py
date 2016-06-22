@@ -3,3 +3,4 @@
 from .tester import Tester
 from .hook import Hook
 from . import regular
+from . import bag

@@ -9,6 +9,7 @@ from ..exceptions import NotImplementedError
 from ..meta import meta
 
 from sklearn import svm
+import misvm
 import numpy as np
 
 class Detector(object):
@@ -94,3 +95,36 @@ class SVMDetector(Detector):
         with open(file_name, "r") as f:
             self.clf = cPickle.load(f)
         return self
+
+class MISVMDetector(Detector):
+    """
+    MIL-SVM分类器 Kernel: linear
+    """
+    TYPE = "mil"
+
+    def __init__(self, cfg, **kwargs):
+        super(MISVMDetector, self).__init__(cfg, **kwargs)
+        self.classifier = misvm.MISVM(kernel='linear', C=1.0, max_iters=50)
+
+    def train(self, bags, labels):
+        # features is a np.array
+        self.classifier.fit(bags, labels) # get the parameters
+        return self.classifier
+
+    def test(self, bags):
+        # features is a np.array
+        # Attention: If dataset is very small, the results of predict and predict_proba have big differences. 
+        labels = self.classifier.predict(bags)
+        return np.sign(labels)
+                                            
+    def save(self, file_name):
+        with open(file_name, "w") as f:
+            cPickle.dump(self.classifier, f)
+
+    @classmethod
+    def load(cls, cfg, file_name):
+        self = cls(cfg)
+        with open(file_name, "r") as f:
+            self.classifier = cPickle.load(f)
+        return self
+

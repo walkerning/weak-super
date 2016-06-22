@@ -6,6 +6,7 @@ def main():
     from .trainer import Trainer
     from . import iterative
     from . import supervised
+    from . import MItrainer
     from .config import cfg_from_file
     parser = argparse.ArgumentParser()
     parser.add_argument("cfg_file", help="The path of the config file")
@@ -18,6 +19,7 @@ def main():
 def test_main():
     from .tester import Tester
     from .tester import regular
+    from .tester import bagtester
     from .tester import Hook
     from .config import cfg_from_file
     parser = argparse.ArgumentParser()
