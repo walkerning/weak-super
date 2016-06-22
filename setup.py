@@ -24,7 +24,8 @@ INSTALL_REQUIRES = [
     "scikit-image==0.12.3",
     "matplotlib==1.5.1",
     "scikit-learn==0.17.1",
-    "Cython==0.24", # poped by pip freeze
+    "Cython==0.24",
+    "psutil==4.3.0", # poped by pip freeze
 ]
 TESTS_REQUIRE = [
     "pytest==2.9.2"
